@@ -18,3 +18,16 @@ Pruebas:
 7. Pedir dos helados
 8. Elegir el modal para buscar un taxi
 9. Esperar a que aparezca la información del conductor en el modal (opcional)
+
+## Tecnologías utilizadas
+
+- Python 3
+- Selenium WebDriver
+- pytest
+
+## Cómo ejecutar las pruebas
+
+```bash
+pip install selenium pytest
+pytest main.py -v
+```

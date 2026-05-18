@@ -1,7 +1,5 @@
-from selenium.webdriver.common.by import By
-
-from pages import UrbanRoutesPage
 from helpers import retrieve_phone_code
+from selenium.webdriver.common.keys import Keys
 
 class UrbanRoutesPage:
 
@@ -13,7 +11,11 @@ class UrbanRoutesPage:
 
     comfort_button = (By.CLASS_NAME, "tariff-card-4")
 
-    phone_field = (By.CLASS_NAME, "np-text")
+    phone_number_control = (By.CLASS_NAME, "np-text")
+    phone_input = (By.ID, "phone")
+    phone_code_input = (By.ID, "code")
+    next_button = (By.CSS_SELECTOR, ".full")
+    confirm_button = (By.XPATH, "//button[contains(text(),'Confirmar')]")
 
     pay_button = (By.CLASS_NAME, "pp-value-container")
     card_button = By.CLASS_NAME, "pp-row disabled"
@@ -27,7 +29,7 @@ class UrbanRoutesPage:
     driver_message = (By.ID, "comment")
 
     blanket_switch = (By.CSS_SELECTOR, "input.switch-input")
-    acoustic_curtain_button = (By.CSS_SELECTOR, "input.switch-input")
+    acoustic_curtain_button = ((By.XPATH, "//div[contains(text(),'Cortina acústica')]/..//input[@class='switch-input']"))
     ice_cream_button = (By.CLASS_NAME, "counter-plus")
 
     find_taxi_button = (By.CLASS_NAME, "smart-button-secondary")
@@ -58,16 +60,25 @@ class UrbanRoutesPage:
         self.driver.find_element(*self.ask_taxi_button).click()
     def click_comfort_button(self):
         self.driver.find_element(*self.comfort_button).click()
-    def set_phone(self, phone_number):
-        self.driver.find_element(*self.phone_field).send_keys(phone_number)
-    def click_pay_button(self):
+
+    def fill_phone_number(self, phone_number):
+        self.driver.find_element(*self.phone_number_control).click()  # 1. Abrir modal
+        self.driver.find_element(*self.phone_input).send_keys(phone_number)  # 2. Escribir número
+        self.driver.find_element(*self.next_button).click()  # 3. Siguiente
+        phone_code = retrieve_phone_code(self.driver)  # 4. Obtener código
+        self.driver.find_element(*self.phone_code_input).send_keys(phone_code)  # 5. Escribir código
+        self.driver.find_element(*self.confirm_button).click()  # 6. Confirmardef click_pay_button(self):
         self.driver.find_element(*self.pay_button).click()
+
     def click_card_button(self):
         self.driver.find_element(*self.card_button).click()
     def set_card(self, card_number):
         self.driver.find_element(*self.card_field).send_keys(card_number)
+
     def set_code(self, card_code):
         self.driver.find_element(*self.card_code_field).send_keys(card_code)
+        self.driver.find_element(*self.card_code_field).send_keys(Keys.TAB)
+
     def click_submit_button(self):
         self.driver.find_element(*self.submit_button).click()
     def click_exit_card_button(self):
@@ -75,7 +86,7 @@ class UrbanRoutesPage:
     def set_driver_message(self, message_for_driver):
         self.driver.find_element(*self.driver_message).send_keys(message_for_driver)
     def click_tissue_blanket_button(self):
-        self.driver.find_element(*self.tissue_blanket_button).click()
+        self.driver.find_element(*self.blanket_switch).click()
     def click_acoustic_curtain_button(self):
         self.driver.find_element(*self.acoustic_curtain_button).click()
     def add_ice_cream(self, times=2):
