@@ -1,3 +1,6 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 from helpers import retrieve_phone_code
 from selenium.webdriver.common.keys import Keys
 
@@ -14,8 +17,8 @@ class UrbanRoutesPage:
     phone_number_control = (By.CLASS_NAME, "np-text")
     phone_input = (By.ID, "phone")
     phone_code_input = (By.ID, "code")
-    next_button = (By.CSS_SELECTOR, ".full")
-    confirm_button = (By.XPATH, "//button[contains(text(),'Confirmar')]")
+    next_button = (By.XPATH, "//button[text()='Siguiente']")
+    confirm_button = (By.XPATH, "//button[text()='Confirmar']")
 
     pay_button = (By.CLASS_NAME, "pp-value-container")
     card_button = By.CLASS_NAME, "pp-row disabled"
@@ -62,29 +65,29 @@ class UrbanRoutesPage:
         self.driver.find_element(*self.comfort_button).click()
 
     def fill_phone_number(self, phone_number):
-        self.driver.find_element(*self.phone_number_control).click()  # 1. Abrir modal
-        self.driver.find_element(*self.phone_input).send_keys(phone_number)  # 2. Escribir número
-        self.driver.find_element(*self.next_button).click()  # 3. Siguiente
-        phone_code = retrieve_phone_code(self.driver)  # 4. Obtener código
-        self.driver.find_element(*self.phone_code_input).send_keys(phone_code)  # 5. Escribir código
-        self.driver.find_element(*self.confirm_button).click()  # 6. Confirmardef click_pay_button(self):
+        self.driver.find_element(*self.phone_number_control).click()
+        self.driver.find_element(*self.phone_input).send_keys(phone_number)
+        self.driver.find_element(*self.next_button).click()
+        phone_code = retrieve_phone_code(self.driver)
+        self.driver.find_element(*self.phone_code_input).send_keys(phone_code)
+        self.driver.find_element(*self.confirm_button).click()  # 6. Confirmar
+
+    def fill_card(self, card_number, card_code):
         self.driver.find_element(*self.pay_button).click()
-
-    def click_card_button(self):
         self.driver.find_element(*self.card_button).click()
-    def set_card(self, card_number):
-        self.driver.find_element(*self.card_field).send_keys(card_number)
-
-    def set_code(self, card_code):
+        self.driver.find_element(*self.card_number_field).send_keys(card_number)
         self.driver.find_element(*self.card_code_field).send_keys(card_code)
-        self.driver.find_element(*self.card_code_field).send_keys(Keys.TAB)
-
-    def click_submit_button(self):
+        self.driver.find_element(*self.card_code_field).send_keys(Keys.TAB)  # quitar foco ✅
         self.driver.find_element(*self.submit_button).click()
-    def click_exit_card_button(self):
         self.driver.find_element(*self.exit_card_button).click()
+    def get_payment_method(self):
+        return self.driver.find_element(By.CLASS_NAME, 'pp-value-text').text
+
     def set_driver_message(self, message_for_driver):
         self.driver.find_element(*self.driver_message).send_keys(message_for_driver)
+    def get_message_for_driver(self):
+        return self.driver.find_element(By.XPATH, ".//input[@id='comment'].text")
+
     def click_tissue_blanket_button(self):
         self.driver.find_element(*self.blanket_switch).click()
     def click_acoustic_curtain_button(self):
@@ -95,5 +98,7 @@ class UrbanRoutesPage:
             button.click()
     def click_find_taxi_button(self):
         self.driver.find_element(*self.find_taxi_button).click()
+
     def wait_for_load_order_header(self):
-        WebDriverWait(self.driver, 5).until(expected_conditions.visibility_of_element_located(self.order-header-title))
+        order_header = (By.CLASS_NAME, 'order-body')
+        WebDriverWait(self.driver, 40).until(expected_conditions.visibility_of_element_located(self.order_header))
