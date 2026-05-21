@@ -3,8 +3,8 @@ from pages import UrbanRoutesPage
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-class TestUrbanRoutes:
 
+class TestUrbanRoutes:
     driver = None
 
     @classmethod
