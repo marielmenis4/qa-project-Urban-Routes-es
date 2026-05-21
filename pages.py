@@ -12,7 +12,7 @@ class UrbanRoutesPage:
     flash_button = (By.CSS_SELECTOR, "div.mode.active")
     ask_taxi_button = (By.CSS_SELECTOR, "button.button.round")
 
-    comfort_button = (By.XPATH, ".//div[@tcard = 'Comfort']")
+    comfort_button = (By.CLASS_NAME, "tariff-card-4")
 
     phone_number_control = (By.CLASS_NAME, "np-text")
     phone_input = (By.ID, "phone")
@@ -21,23 +21,21 @@ class UrbanRoutesPage:
     confirm_button = (By.XPATH, "//button[text()='Confirmar']")
 
     pay_button = (By.CLASS_NAME, "pp-value-container")
-    card_button = (By.CSS_SELECTOR, ".pp-row.disabled")
+    card_button = By.CLASS_NAME, "pp-row disabled"
     card_field = (By.CLASS_NAME, "pp-text")
     add_card = (By.CLASS_NAME, "card-input")
     card_number_field = (By.ID, "number")
     card_code_field = (By.ID, "code")
     submit_button = (By.XPATH, "//form[@name='button-full']//button[text()='Agregar']")
-    exit_card_button = (By.CSS_SELECTOR, ".payment-picker.open .close-button")
+    exit_card_button = (By.TAG_NAME, "button")
 
     driver_message = (By.ID, "comment")
 
     blanket_switch = (By.CSS_SELECTOR, "input.switch-input")
-    acoustic_curtain_button = (By.XPATH, "//div[contains(text(),'Cortina acústica')]/..//input[@class='switch-input']")
+    acoustic_curtain_button = ((By.XPATH, "//div[contains(text(),'Cortina acústica')]/..//input[@class='switch-input']"))
     ice_cream_button = (By.CLASS_NAME, "counter-plus")
 
     find_taxi_button = (By.CLASS_NAME, "smart-button-secondary")
-
-    order_header = (By.CLASS_NAME, 'order-body')
 
     def __init__(self, driver):
         self.driver = driver
@@ -73,8 +71,6 @@ class UrbanRoutesPage:
         phone_code = retrieve_phone_code(self.driver)
         self.driver.find_element(*self.phone_code_input).send_keys(phone_code)
         self.driver.find_element(*self.confirm_button).click()  # 6. Confirmar
-    def get_phone_number(self):
-        return self.driver.find_element(By.CLASS_NAME, 'np-text').text
 
     def fill_card(self, card_number, card_code):
         self.driver.find_element(*self.pay_button).click()
@@ -90,7 +86,7 @@ class UrbanRoutesPage:
     def set_driver_message(self, message_for_driver):
         self.driver.find_element(*self.driver_message).send_keys(message_for_driver)
     def get_message_for_driver(self):
-        return self.driver.find_element(*self.driver_message).get_property('value')
+        return self.driver.find_element(By.XPATH, ".//input[@id='comment'].text")
 
     def click_tissue_blanket_button(self):
         self.driver.find_element(*self.blanket_switch).click()
@@ -104,4 +100,5 @@ class UrbanRoutesPage:
         self.driver.find_element(*self.find_taxi_button).click()
 
     def wait_for_load_order_header(self):
+        order_header = (By.CLASS_NAME, 'order-body')
         WebDriverWait(self.driver, 40).until(expected_conditions.visibility_of_element_located(self.order_header))
